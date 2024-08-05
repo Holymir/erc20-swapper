@@ -50,7 +50,7 @@ contract ERC20SwapperImpl is IERC20Swapper, PausableUpgradeable, OwnableUpgradea
     {
         if (msg.value <= 0) revert MustSendEther();
         if (minAmount <= 0) revert MinAmountGreaterThanZero();
-        if (token != address(0)) revert InvalidTokenAddress();
+        if (token == address(0)) revert InvalidTokenAddress();
 
         address[] memory path = new address[](2);
         path[0] = uniswapRouter.WETH();

@@ -46,7 +46,7 @@ contract ERC20SwapperImplV2 is
     event TokensSwapped(address indexed user, address token, uint256 amountIn, uint256 amountOut);
 
     // TODO: Relocate priceFeedTokenUsd within the swap function
-    function initialize(address _ethUsdPriceFeed, address _tokenUsdPriceFeed) public reinitializer(2) {
+    function initialize(address _ethUsdPriceFeed, address _tokenUsdPriceFeed) public reinitializer(3) {
         if (_ethUsdPriceFeed == address(0)) revert InvalidEthUsdPriceFeed();
         if (_tokenUsdPriceFeed == address(0)) revert InvalidTokenUsdPriceFeed();
         priceFeedEthUsd = AggregatorV3Interface(_ethUsdPriceFeed);
@@ -61,9 +61,9 @@ contract ERC20SwapperImplV2 is
         nonReentrant
         returns (uint256)
     {
-        if (msg.value == 0) revert MustSendEther();
+        if (msg.value <= 0) revert MustSendEther();
         if (minAmount <= 0) revert MinAmountGreaterThanZero();
-        if (token != address(0)) revert InvalidTokenAddress();
+        if (token == address(0)) revert InvalidTokenAddress();
 
         // Get the latest price of ETH in USD
         (, int256 ethUsdPrice,,,) = priceFeedEthUsd.latestRoundData();
