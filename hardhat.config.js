@@ -2,7 +2,7 @@ require("@nomicfoundation/hardhat-toolbox");
 require('@openzeppelin/hardhat-upgrades');
 const { vars } = require("hardhat/config");
 
-const MAIN_KEY = vars.get("MAIN_KEY"); //"0x36c065cb89adf6290ecdd5f333945bcfa0f691f5c7a535f6922593af7956235e";
+const MAIN_KEY = vars.get("MAIN_KEY");
 
 const ETHERSCAN_API_KEY = vars.get("ETHERSCAN_API_KEY");
 
