@@ -20,6 +20,9 @@ module.exports = {
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
   },
+  sourcify: {
+    enabled: true
+  },
   solidity: {
     version: "0.8.24",
     settings: {

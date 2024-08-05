@@ -1,12 +1,14 @@
-// scripts/upgrade.js
+const { ethers, upgrades } = require('hardhat');
+const EthUsdFeed = '0x694AA1769357215DE4FAC081bf1f309aDC325306';
+const LinkUsdFeed = '0x42585eD362B3f1BCa95c640FdFf35Ef899212734';
+
 async function main() {
-    const { ethers, upgrades } = require('hardhat');
 
-    const proxyAddress = '0xbC50f3D3314aC6e4073853B2FF84C1E621D9dd27'; // Replace with your deployed proxy contract address
+    const proxyAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'; // Replace with your deployed proxy contract address
     const ERC20SwapperImplV2 = await ethers.getContractFactory('ERC20SwapperImplV2');
-    const instance = await upgrades.upgradeProxy(proxyAddress, ERC20SwapperImplV2);
-
-    console.log('ERC20SwapperImpl upgraded at:', instance);
+    const upgraded = await upgrades.upgradeProxy(proxyAddress, ERC20SwapperImplV2);
+    await upgraded.initialize(EthUsdFeed, LinkUsdFeed);
+    console.log('ERC20SwapperImpl upgraded at:', instance.target);
 }
 
 main()
