@@ -1,3 +1,9 @@
+# Overview
+
+The proxy for the implementation is currently deployed at the address: `0xB88599047de09c0078017baA5BD0B412900E789c`.
+
+While the contract is comprehensive and meets most of the task requirements, there is potential for simplification and optimization to make it more gas-efficient.
+
 # ERC20 Swapper Implementation
 
 This project implements a Solidity smart contract for swapping Ether to ERC20 tokens using the UniswapV2Router02. It utilizes OpenZeppelin's upgradeable proxy pattern for easy upgrades and incorporates best practices for security and gas efficiency.
@@ -50,7 +56,7 @@ To deploy the proxy and initialize the contract:
         const ERC20Swapper = await ethers.getContractFactory("ERC20SwapperImpl");
         const instance = await upgrades.deployProxy(ERC20Swapper, ["0xUniswapRouterAddress"], {initializer: "initialize"});
         await instance.deployed();
-        console.log("ERC20Swapper deployed to:", instance.address);
+        console.log("ERC20Swapper deployed to:", instance.target);
     }
 
     main()
@@ -63,32 +69,42 @@ To deploy the proxy and initialize the contract:
 
     Replace `0xUniswapRouterAddress` with the actual Uniswap V2 router address.
 
+    ```sh
+    $ npx hardhat vars set MAIN_KEY
+    $ npx hardhat vars set ETHERSCAN_API_KEY
+    $ npx hardhat vars set INFURA_API_KEY
+    $ npx hardhat run ./scripts/deploy.js --network sepolia
+    ```
+
 ## Upgrading
 
 To upgrade the contract to a new implementation:
 
-1. Implement the new version of the contract (e.g., `NewERC20SwapperImpl`).
-2. Upgrade the proxy to the new implementation and call initializer if necessary:
+1.  Upgrade the proxy to the new implementation and call initializer if necessary:
 
-    ```javascript
-    async function main() {
-        const proxyAddress = "0xYourProxyAddress";
-        const NewImplementation = await ethers.getContractFactory("NewERC20SwapperImpl");
+        ```javascript
+        async function main() {
+            const proxyAddress = "0xYourProxyAddress";
+            const NewImplementation = await ethers.getContractFactory("ERC20SwapperImplV2");
 
-        // Upgrade the contract at the proxy address to the new implementation
-        const upgraded = await upgrades.upgradeProxy(proxyAddress, NewImplementation);
-        console.log("Proxy upgraded to:", upgraded.address);
+            // Upgrade the contract at the proxy address to the new implementation
+            const upgraded = await upgrades.upgradeProxy(proxyAddress, NewImplementation);
+            console.log("Proxy upgraded to:", upgraded.target);
 
-        // Initialize the new implementation if necessary
-        await upgraded.connect(ethers.provider.getSigner()).initialize("0xNewValueOrParameters");
-    }
+            // Initialize the new implementation if necessary
+            await upgraded.initialize("[0xNewValueOrParameters]...");
+        }
 
-    main()
-        .then(() => process.exit(0))
-        .catch((error) => {
-            console.error(error);
-            process.exit(1);
-        });
+        main()
+            .then(() => process.exit(0))
+            .catch((error) => {
+                console.error(error);
+                process.exit(1);
+            });
+        ```
+
+    ```sh
+    $ npx hardhat run ./scripts/upgrade.js --network sepolia
     ```
 
 ## Usage
@@ -136,3 +152,7 @@ To upgrade the contract to a new implementation:
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+```
+
+```
